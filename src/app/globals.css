@@ -112,6 +112,26 @@ body {
   will-change: transform;
 }
 
+/* ===== Puente de aurora vibrante (inicio: une destacado + manifiesto) ===== */
+.aurora-bridge {
+  background: conic-gradient(
+    from 0deg,
+    #7a5cff,
+    #82e6ff,
+    #ff97d6,
+    #b7a2ff,
+    #7a5cff
+  );
+  filter: blur(80px);
+  will-change: transform, opacity;
+  animation: auroraBridge 22s linear infinite;
+}
+@keyframes auroraBridge {
+  0%   { transform: rotate(0deg) scale(1);      opacity: 0.42; }
+  50%  { transform: rotate(180deg) scale(1.14); opacity: 0.62; }
+  100% { transform: rotate(360deg) scale(1);    opacity: 0.42; }
+}
+
 /* Scrollbar fino y holográfico */
 ::-webkit-scrollbar { width: 0px; height: 0px; }
 

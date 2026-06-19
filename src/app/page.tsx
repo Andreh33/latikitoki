@@ -17,9 +17,17 @@ export default function Home() {
   return (
     <main className="relative">
       <Hero />
-      <ProductoDelMes />
-      <LiquidDivider />
-      <Manifesto />
+      <div className="relative overflow-hidden">
+        {/* Puente de aurora vibrante: une el producto destacado con el manifiesto */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+        >
+          <div className="aurora-bridge h-[42rem] w-[42rem] max-w-[92vw] rounded-full" />
+        </div>
+        <ProductoDelMes />
+        <Manifesto />
+      </div>
       <Featured />
       <Categories />
       <Catalog />
