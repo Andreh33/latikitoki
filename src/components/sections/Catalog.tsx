@@ -21,6 +21,7 @@ const CHIPS: { key: Filter; label: string }[] = [
 
 export function Catalog() {
   const [filter, setFilter] = useState<Filter>("all");
+  const [visible, setVisible] = useState(24);
 
   useEffect(() => {
     const onFilter = (e: Event) => {
@@ -31,7 +32,10 @@ export function Catalog() {
     return () => window.removeEventListener(FILTER_EVENT, onFilter);
   }, []);
 
+  useEffect(() => setVisible(24), [filter]);
+
   const items = productsByCategory(filter);
+  const shown = items.slice(0, visible);
 
   return (
     <section id="tienda" className="mx-auto max-w-[1400px] px-5 py-28 md:px-8">
@@ -84,11 +88,23 @@ export function Catalog() {
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-4"
         >
-          {items.map((p) => (
+          {shown.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </motion.div>
       </AnimatePresence>
+
+      {items.length > visible && (
+        <div className="mt-12 flex justify-center">
+          <button
+            onClick={() => setVisible((v) => v + 24)}
+            data-cursor
+            className="btn-ghost"
+          >
+            Ver más productos ({items.length - visible})
+          </button>
+        </div>
+      )}
     </section>
   );
 }
