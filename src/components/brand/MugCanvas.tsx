@@ -21,20 +21,20 @@ function makeLabel() {
   x.fillStyle = g;
   x.textAlign = "center";
   x.textBaseline = "middle";
-  x.font = "800 168px Bricolage Grotesque, Arial, sans-serif";
-  x.fillText("tikitoki", 512, 215);
-  // corazón + tagline
-  x.font = "70px serif";
-  x.fillText("💜", 512, 345);
-  x.font = "600 40px Geist Mono, monospace";
+  // logo en una banda central (lados lisos) para que no toque el asa
+  x.font = "800 138px Bricolage Grotesque, Arial, sans-serif";
+  x.fillText("tikitoki", 512, 220);
+  x.font = "62px serif";
+  x.fillText("💜", 512, 332);
+  x.font = "600 34px Geist Mono, monospace";
   x.fillStyle = "#2a1f4a";
-  x.fillText("lo viral, antes que nadie", 512, 420);
+  x.fillText("lo viral, antes que nadie", 512, 398);
   const tex = new THREE.CanvasTexture(c);
   tex.anisotropy = 16;
   tex.colorSpace = THREE.SRGBColorSpace;
-  // centra el logo hacia delante
+  // coloca el logo en el lado OPUESTO al asa
   tex.center.set(0.5, 0.5);
-  tex.offset.set(0.25, 0);
+  tex.offset.set(0.75, 0);
   tex.wrapS = THREE.RepeatWrapping;
   return tex;
 }
@@ -73,17 +73,15 @@ function Mug() {
           <torusGeometry args={[1.0, 0.045, 24, 96]} />
           <meshPhysicalMaterial color="#ffffff" roughness={0.15} clearcoat={1} />
         </mesh>
-        {/* asa: aro vertical en el lateral (la taza oculta la parte interior) */}
+        {/* asa: cerámica lisa, SIN logo (no se dibuja nada en el asa) */}
         <mesh position={[1.0, -0.05, 0]}>
           <torusGeometry args={[0.52, 0.1, 24, 96]} />
           <meshPhysicalMaterial
-            map={label}
-            roughness={0.22}
-            metalness={0.05}
+            color="#f7f3ff"
+            roughness={0.2}
             clearcoat={1}
             clearcoatRoughness={0.18}
             iridescence={0.3}
-            iridescenceIOR={1.3}
           />
         </mesh>
       </group>

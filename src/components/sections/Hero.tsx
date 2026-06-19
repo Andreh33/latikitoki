@@ -46,7 +46,7 @@ export function Hero() {
 
       {/* Viñeta + asiento oscuro para legibilidad del texto */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(130%_90%_at_50%_26%,transparent_22%,rgba(7,4,17,0.5)_62%,rgba(7,4,17,0.96))]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(48%_44%_at_50%_50%,rgba(7,4,17,0.55),transparent_72%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(56%_50%_at_50%_47%,rgba(7,4,17,0.74),transparent_72%)]" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-noche via-noche/40 to-transparent" />
 
       {/* Contenido */}
@@ -63,6 +63,7 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: D, duration: 0.8, ease: EASE }}
           className="eyebrow mb-6 flex items-center gap-3"
+          style={{ color: "#ece6ff" }}
         >
           <span className="holo-text-static">✦</span> Lo viral, antes que nadie
           <span className="holo-text-static">✦</span>
@@ -84,7 +85,11 @@ export function Hero() {
               initial={{ y: "118%" }}
               animate={{ y: 0 }}
               transition={{ delay: D + 0.2, duration: 1.1, ease: EASE }}
-              className="holo-text text-glow block text-[clamp(3.4rem,15vw,12.5rem)]"
+              className="holo-text block text-[clamp(3.4rem,15vw,12.5rem)]"
+              style={{
+                textShadow:
+                  "0 0 34px rgba(139,92,246,0.7), 0 10px 55px rgba(0,0,0,0.6)",
+              }}
             >
               TIKITOKI
             </motion.span>

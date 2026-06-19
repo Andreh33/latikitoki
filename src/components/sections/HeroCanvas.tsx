@@ -112,10 +112,10 @@ function LiquidChrome({ lite }: { lite: boolean }) {
       <mesh ref={mesh} scale={lite ? 1.85 : 2.05}>
         <sphereGeometry args={[1, lite ? 96 : 160, lite ? 96 : 160]} />
         <MeshDistortMaterial
-          color="#e3d9ff"
+          color="#f0e9ff"
           metalness={1}
-          roughness={0.24}
-          envMapIntensity={1.8}
+          roughness={0.11}
+          envMapIntensity={2.2}
           distort={lite ? 0.3 : 0.4}
           speed={1.8}
         />
@@ -201,12 +201,15 @@ function Scene({ lite }: { lite: boolean }) {
 
       {/* Entorno holográfico: lo que refleja el cromo */}
       <Environment resolution={lite ? 128 : 256} frames={1}>
-        <color attach="background" args={["#3a2a78"]} />
-        <Lightformer intensity={3.6} position={[3, 3, 2]} scale={[8, 8, 1]} color="#b7a2ff" />
-        <Lightformer intensity={3.2} position={[-4, -1, 1]} scale={[8, 8, 1]} color="#82e6ff" />
-        <Lightformer intensity={2.8} position={[0, -3, -2]} scale={[9, 5, 1]} color="#ff97d6" />
-        <Lightformer intensity={3} position={[-2, 4, -3]} scale={[6, 6, 1]} color="#ffffff" />
-        <Lightformer intensity={2} form="ring" position={[2, 1, 3]} scale={[3.5, 3.5, 1]} color="#cdbcff" />
+        <color attach="background" args={["#43317f"]} />
+        <Lightformer intensity={4} position={[3, 3, 2]} scale={[8, 8, 1]} color="#b7a2ff" />
+        <Lightformer intensity={3.6} position={[-4, -1, 1]} scale={[8, 8, 1]} color="#82e6ff" />
+        <Lightformer intensity={3} position={[0, -3, -2]} scale={[9, 5, 1]} color="#ff97d6" />
+        {/* franjas blancas tipo estudio → reflejos nítidos en el cromo */}
+        <Lightformer intensity={6} position={[-2.5, 3, 1]} scale={[0.6, 9, 1]} color="#ffffff" />
+        <Lightformer intensity={5} position={[3, -2.5, 1.5]} scale={[9, 0.6, 1]} color="#ffffff" />
+        <Lightformer intensity={4} position={[2.5, 2.5, 2]} scale={[0.5, 6, 1]} color="#dceaff" />
+        <Lightformer intensity={2.4} form="ring" position={[1.5, 1, 3]} scale={[3.5, 3.5, 1]} color="#cdbcff" />
       </Environment>
 
       <EffectComposer>
