@@ -120,28 +120,31 @@ export function ProductCard({ product }: { product: Product }) {
           {product.tagline}
         </p>
 
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-baseline gap-2">
-            <span className="font-display text-xl font-extrabold">
-              {euro(product.price)}
+        <div className="mt-3 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <span className="font-display text-xl font-extrabold">
+            {euro(product.price)}
+          </span>
+          {product.compareAt && (
+            <span className="text-sm text-niebla/60 line-through">
+              {euro(product.compareAt)}
             </span>
-            {product.compareAt && (
-              <span className="text-sm text-niebla/60 line-through">
-                {euro(product.compareAt)}
-              </span>
-            )}
-          </div>
-          <button
-            onClick={() => add(product)}
-            data-cursor
-            aria-label={`Añadir ${product.name} al carrito`}
-            className="flex h-10 items-center gap-1.5 rounded-full px-4 text-sm font-semibold text-noche transition-transform active:scale-90"
-            style={{ background: "var(--holo)" }}
-          >
-            Añadir
-            <span className="text-base leading-none">+</span>
-          </button>
+          )}
+          {discount > 0 && (
+            <span className="ml-auto rounded-full bg-azul/15 px-2 py-0.5 font-mono text-[0.62rem] font-bold text-azul">
+              −{discount}%
+            </span>
+          )}
         </div>
+        <button
+          onClick={() => add(product)}
+          data-cursor
+          aria-label={`Añadir ${product.name} al carrito`}
+          className="mt-3 flex h-11 w-full items-center justify-center gap-1.5 rounded-full text-sm font-semibold text-noche transition-transform active:scale-90"
+          style={{ background: "var(--holo)" }}
+        >
+          Añadir al carrito
+          <span className="text-base leading-none">+</span>
+        </button>
       </div>
     </motion.article>
   );
