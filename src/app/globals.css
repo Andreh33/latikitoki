@@ -323,6 +323,62 @@ h1, h2, h3, h4 {
   100% { transform: translateY(260%); }
 }
 
+/* Latido de corazón para las "T" del logo */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  12% { transform: scale(1.28); }
+  24% { transform: scale(1); }
+  36% { transform: scale(1.18); }
+  50% { transform: scale(1); }
+}
+.beat {
+  display: inline-block;
+  transform-origin: center 60%;
+  animation: heartbeat 1.6s ease-in-out infinite;
+}
+
+/* Mascota Tiki */
+@keyframes tikiBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-7%) rotate(-1.5deg); }
+}
+@keyframes tikiWiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+.tiki-bob { animation: tikiBob 3.4s ease-in-out infinite; }
+
+/* Destellos / purpurina */
+@keyframes twinkle {
+  0% { transform: scale(0) rotate(0deg); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: scale(1.1) rotate(120deg); opacity: 0; }
+}
+
+/* Cometa de la barra de progreso */
+@keyframes cometGlow {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(183,162,255,0.9)); }
+  50% { filter: drop-shadow(0 0 16px rgba(130,230,255,1)); }
+}
+
+/* Líquido */
+@keyframes liquidShift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-25px); }
+}
+
+/* Confeti */
+@keyframes confettiFall {
+  0% { transform: translate(0, -10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translate(var(--drift, 0px), 110vh) rotate(720deg); opacity: 0.9; }
+}
+
+/* Brillo de barrido reutilizable */
+@keyframes shineSweep {
+  0% { transform: translateX(-150%) skewX(-20deg); }
+  100% { transform: translateX(250%) skewX(-20deg); }
+}
+
 .anim-float { animation: floaty 6s ease-in-out infinite; }
 .anim-spin-slow { animation: spinSlow 26s linear infinite; }
 .anim-pulse-glow { animation: pulseGlow 5s ease-in-out infinite; }

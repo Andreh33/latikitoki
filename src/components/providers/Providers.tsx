@@ -9,6 +9,7 @@ import { Preloader } from "@/components/sections/Preloader";
 import { Nav } from "@/components/sections/Nav";
 import { CartDrawer } from "@/components/sections/CartDrawer";
 import { QuickView } from "@/components/sections/QuickView";
+import { PWA } from "./PWA";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -22,6 +23,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           {children}
           <CartDrawer />
           <QuickView />
+          <PWA />
         </SmoothScroll>
       </QuickViewProvider>
     </CartProvider>

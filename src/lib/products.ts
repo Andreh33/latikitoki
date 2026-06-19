@@ -34,6 +34,7 @@ export interface Product {
   rating: number; // 4.0 - 5.0
   proof: string; // etiqueta editorial honesta (no inventamos ventas)
   featured?: boolean;
+  bestSeller?: boolean; // "producto del mes" destacado en la home
   image?: string; // ruta a foto real cuando exista
 }
 
@@ -58,7 +59,7 @@ export const CATEGORY_MAP: Record<CategoryKey, Category> = Object.fromEntries(
 
 export const PRODUCTS: Product[] = [
   // — Iluminación —
-  { id: "proyector-galaxia-aurora", name: "Proyector Galaxia Aurora", category: "iluminacion", price: 34.99, compareAt: 59.99, tagline: "Convierte tu techo en una galaxia entera.", badge: "VIRAL", hue: 262, rating: 4.9, proof: "Viral en TikTok", featured: true },
+  { id: "proyector-galaxia-aurora", name: "Proyector Galaxia Aurora", category: "iluminacion", price: 34.99, compareAt: 59.99, tagline: "Convierte tu techo en una galaxia entera.", badge: "VIRAL", hue: 262, rating: 4.9, proof: "Viral en TikTok", featured: true, bestSeller: true },
   { id: "astronauta-nebulosa", name: "Astronauta Proyector Nebulosa", category: "iluminacion", price: 39.99, tagline: "El astronauta que flota en tu nebulosa privada.", badge: "TOP VENTAS", hue: 248, rating: 4.8, proof: "Top de la semana", featured: true },
   { id: "tira-led-reactiva", name: "Tira LED RGB Reactiva 10m", category: "iluminacion", price: 24.99, compareAt: 39.99, tagline: "Baila al ritmo de tu música. Literalmente.", badge: "VIRAL", hue: 200, rating: 4.7, proof: "Lo más guardado", featured: true },
   { id: "lampara-luna-levitante", name: "Lámpara Luna Levitante", category: "iluminacion", price: 49.99, tagline: "Una luna real flotando sobre tu mesa.", badge: "EDICIÓN LIMITADA", hue: 280, rating: 4.9, proof: "Edición limitada" },
@@ -99,6 +100,8 @@ export const PRODUCTS: Product[] = [
 ];
 
 export const FEATURED = PRODUCTS.filter((p) => p.featured);
+
+export const BEST_SELLER = PRODUCTS.find((p) => p.bestSeller) ?? PRODUCTS[0];
 
 export function productsByCategory(key: CategoryKey | "all") {
   if (key === "all") return PRODUCTS;

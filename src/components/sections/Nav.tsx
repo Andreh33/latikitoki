@@ -5,14 +5,15 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCart } from "@/components/providers/CartProvider";
 import { useScrollTo } from "@/components/providers/SmoothScroll";
 import { Magnetic } from "@/components/ui/Magnetic";
+import { BrandMark } from "@/components/brand/BrandMark";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
   { label: "Inicio", id: "inicio" },
   { label: "Tienda", id: "tienda" },
-  { label: "Categorías", id: "categorias" },
+  { label: "Juegos", id: "juegos" },
+  { label: "Club", id: "club" },
   { label: "El Drop", id: "drop" },
-  { label: "Nosotras", id: "manifiesto" },
 ];
 
 function BagIcon() {
@@ -64,20 +65,11 @@ export function Nav() {
           {/* Wordmark */}
           <button
             onClick={() => go("inicio")}
-            className="group flex items-center gap-2"
+            className="group flex items-center"
             data-cursor
             aria-label="La TikiToki — inicio"
           >
-            <span className="relative flex h-8 w-8 items-center justify-center">
-              <span className="absolute inset-0 rounded-full bg-[var(--holo)] opacity-90 blur-[2px]" />
-              <span className="absolute inset-[3px] rounded-full bg-noche" />
-              <span className="relative font-display text-sm font-extrabold holo-text-static">
-                T
-              </span>
-            </span>
-            <span className="font-display text-lg font-extrabold tracking-tight">
-              tikitoki
-            </span>
+            <BrandMark />
           </button>
 
           {/* Links centro */}

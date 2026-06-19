@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { useCart } from "@/components/providers/CartProvider";
 import { useQuickView } from "@/components/providers/QuickViewProvider";
 import { ProductMedia } from "./ProductMedia";
@@ -34,16 +34,46 @@ export function ProductCard({ product }: { product: Product }) {
     ? Math.round((1 - product.price / product.compareAt) * 100)
     : 0;
 
+  // Tilt 3D según el ratón
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [9, -9]), {
+    stiffness: 200,
+    damping: 18,
+  });
+  const rotateY = useSpring(useTransform(mx, [-0.5, 0.5], [-9, 9]), {
+    stiffness: 200,
+    damping: 18,
+  });
+
+  const onMove = (e: React.MouseEvent<HTMLElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    mx.set((e.clientX - r.left) / r.width - 0.5);
+    my.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const onLeave = () => {
+    mx.set(0);
+    my.set(0);
+  };
+
   return (
     <motion.article
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
       whileHover={{ y: -6 }}
-      transition={{ type: "spring", stiffness: 300, damping: 22 }}
+      style={{
+        rotateX,
+        rotateY,
+        transformPerspective: 900,
+        transformStyle: "preserve-3d",
+      }}
       className="group relative flex flex-col"
     >
       {/* Media */}
       <button
         onClick={() => onQuickView(product)}
         data-cursor-label="VER"
+        style={{ transform: "translateZ(34px)" }}
         className="relative block aspect-[4/5] w-full overflow-hidden rounded-[1.4rem] border border-white/10 transition-colors duration-300 group-hover:border-[rgba(183,162,255,0.4)]"
       >
         <ProductMedia
@@ -52,7 +82,6 @@ export function ProductCard({ product }: { product: Product }) {
           className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-[1.07]"
         />
 
-        {/* Badges */}
         <div className="absolute left-3 top-3 flex flex-col items-start gap-1.5">
           {product.badge && <Badge label={product.badge} />}
           {discount > 0 && (
@@ -62,7 +91,6 @@ export function ProductCard({ product }: { product: Product }) {
           )}
         </div>
 
-        {/* Rating */}
         <div className="absolute bottom-3 left-3 flex items-center gap-1 rounded-full bg-noche/60 px-2.5 py-1 backdrop-blur-sm">
           <span className="text-azul">★</span>
           <span className="font-mono text-[0.65rem] text-crema">
@@ -70,7 +98,6 @@ export function ProductCard({ product }: { product: Product }) {
           </span>
         </div>
 
-        {/* Overlay vista rápida */}
         <div className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-noche/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           <span className="mb-4 rounded-full bg-crema/95 px-4 py-1.5 text-xs font-semibold text-noche">
             Vista rápida
@@ -79,7 +106,10 @@ export function ProductCard({ product }: { product: Product }) {
       </button>
 
       {/* Info */}
-      <div className="mt-4 flex flex-1 flex-col">
+      <div
+        className="mt-4 flex flex-1 flex-col"
+        style={{ transform: "translateZ(18px)" }}
+      >
         <p className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-lila">
           {product.proof}
         </p>

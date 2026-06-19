@@ -3,18 +3,18 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 
+const SPARK_COLORS = ["#b7a2ff", "#82e6ff", "#ff97d6", "#ffe15c", "#ffffff"];
+
 /**
- * Cursor personalizado: punto sólido + anillo que persigue con inercia.
- * Crece sobre elementos interactivos y puede mostrar una etiqueta
- * (data-cursor-label="VER"). Se desactiva en táctil.
- *
- * Los nodos se renderizan SIEMPRE para que los refs existan cuando corre
- * el efecto; solo activamos los listeners en punteros finos.
+ * Cursor personalizado: punto + anillo con inercia, crece sobre interactivos,
+ * muestra etiqueta (data-cursor-label) y deja un rastro de purpurina.
+ * Se desactiva en táctil. Los nodos se renderizan siempre (refs válidos).
  */
 export function Cursor() {
   const ringRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
+  const sparkRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fine = window.matchMedia(
@@ -25,7 +25,8 @@ export function Cursor() {
     const ring = ringRef.current;
     const dot = dotRef.current;
     const label = labelRef.current;
-    if (!ring || !dot || !label) return;
+    const sparkLayer = sparkRef.current;
+    if (!ring || !dot || !label || !sparkLayer) return;
 
     const xRing = gsap.quickTo(ring, "x", { duration: 0.5, ease: "power3" });
     const yRing = gsap.quickTo(ring, "y", { duration: 0.5, ease: "power3" });
@@ -33,6 +34,23 @@ export function Cursor() {
     const yDot = gsap.quickTo(dot, "y", { duration: 0.12, ease: "power3" });
 
     let visible = false;
+    let lastSpark = 0;
+
+    const spawnSpark = (x: number, y: number) => {
+      const s = document.createElement("span");
+      s.textContent = "✦";
+      const size = 7 + Math.random() * 11;
+      s.style.cssText = `position:absolute;left:${
+        x + (Math.random() - 0.5) * 18
+      }px;top:${y + (Math.random() - 0.5) * 18}px;font-size:${size}px;color:${
+        SPARK_COLORS[(Math.random() * SPARK_COLORS.length) | 0]
+      };text-shadow:0 0 8px currentColor;transform:translate(-50%,-50%);animation:twinkle ${
+        500 + Math.random() * 400
+      }ms ease-out forwards;will-change:transform,opacity;`;
+      sparkLayer.appendChild(s);
+      s.addEventListener("animationend", () => s.remove());
+    };
+
     const onMove = (e: MouseEvent) => {
       if (!visible) {
         visible = true;
@@ -42,6 +60,12 @@ export function Cursor() {
       yRing(e.clientY);
       xDot(e.clientX);
       yDot(e.clientY);
+
+      const now = performance.now();
+      if (now - lastSpark > 42) {
+        lastSpark = now;
+        spawnSpark(e.clientX, e.clientY);
+      }
     };
 
     const setHover = (active: boolean, text?: string) => {
@@ -61,18 +85,14 @@ export function Cursor() {
       gsap.to(label, { autoAlpha: text ? 1 : 0, duration: 0.25 });
     };
 
-    const interactiveSel = "a, button, [data-cursor], input, textarea";
+    const sel = "a, button, [data-cursor], input, textarea";
     const onOver = (e: MouseEvent) => {
-      const el = (e.target as HTMLElement)?.closest?.<HTMLElement>(
-        interactiveSel,
-      );
+      const el = (e.target as HTMLElement)?.closest?.<HTMLElement>(sel);
       if (el) setHover(true, el.dataset.cursorLabel);
     };
     const onOut = (e: MouseEvent) => {
-      const el = (e.target as HTMLElement)?.closest?.(interactiveSel);
-      const related = (e.relatedTarget as HTMLElement)?.closest?.(
-        interactiveSel,
-      );
+      const el = (e.target as HTMLElement)?.closest?.(sel);
+      const related = (e.relatedTarget as HTMLElement)?.closest?.(sel);
       if (el && el !== related) setHover(false);
     };
     const onDown = () => gsap.to(ring, { scale: 0.8, duration: 0.2 });
@@ -100,24 +120,27 @@ export function Cursor() {
   }, []);
 
   return (
-    <div
-      className="pointer-events-none fixed inset-0 z-[9999] hidden md:block"
-      aria-hidden
-    >
+    <>
+      <div ref={sparkRef} className="pointer-events-none fixed inset-0 z-[9998] hidden md:block" aria-hidden />
       <div
-        ref={ringRef}
-        className="absolute -left-5 -top-5 flex h-10 w-10 items-center justify-center rounded-full border opacity-0"
-        style={{ borderColor: "rgba(183,162,255,0.5)" }}
+        className="pointer-events-none fixed inset-0 z-[9999] hidden md:block"
+        aria-hidden
       >
-        <span
-          ref={labelRef}
-          className="font-mono text-[9px] font-semibold tracking-widest text-crema opacity-0"
+        <div
+          ref={ringRef}
+          className="absolute -left-5 -top-5 flex h-10 w-10 items-center justify-center rounded-full border opacity-0"
+          style={{ borderColor: "rgba(183,162,255,0.5)" }}
+        >
+          <span
+            ref={labelRef}
+            className="font-mono text-[9px] font-semibold tracking-widest text-crema opacity-0"
+          />
+        </div>
+        <div
+          ref={dotRef}
+          className="absolute -left-[3px] -top-[3px] h-1.5 w-1.5 rounded-full bg-crema opacity-0"
         />
       </div>
-      <div
-        ref={dotRef}
-        className="absolute -left-[3px] -top-[3px] h-1.5 w-1.5 rounded-full bg-crema opacity-0"
-      />
-    </div>
+    </>
   );
 }

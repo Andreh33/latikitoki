@@ -1,6 +1,7 @@
 "use client";
 
 import { useScrollTo } from "@/components/providers/SmoothScroll";
+import { BrandMark } from "@/components/brand/BrandMark";
 
 const PAY = ["Visa", "Mastercard", "PayPal", "Bizum", "Apple Pay", "G Pay"];
 
@@ -60,18 +61,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-10 pb-16 md:grid-cols-5">
           {/* Marca */}
           <div className="col-span-2">
-            <div className="flex items-center gap-2">
-              <span className="relative flex h-9 w-9 items-center justify-center">
-                <span className="absolute inset-0 rounded-full bg-[var(--holo)] blur-[2px]" />
-                <span className="absolute inset-[3px] rounded-full bg-noche" />
-                <span className="relative font-display text-base font-extrabold holo-text-static">
-                  T
-                </span>
-              </span>
-              <span className="font-display text-xl font-extrabold">
-                tikitoki
-              </span>
-            </div>
+            <BrandMark size="lg" />
             <p className="mt-5 max-w-[34ch] text-sm text-niebla">
               La tienda de lo viral, antes que nadie. Gadgets, luz y aesthetic
               para tu cuarto, tu glow-up y tu vibe.

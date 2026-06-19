@@ -15,8 +15,17 @@
 - **Bento de categorías** que filtra la tienda al tocar.
 - **Tienda filtrable** con tarjetas holográficas, badges, ratings y descuentos.
 - **Vista rápida** (modal) + **carrito deslizante** con persistencia (localStorage), barra de envío gratis y checkout listo para Stripe.
-- **Cursor personalizado magnético**, barra de progreso, marquesinas infinitas, preloader de marca, menú móvil, grano de película.
+- **Cursor con rastro de purpurina**, barra de progreso **cometa**, marquesinas infinitas, menú móvil, grano de película.
 - **Responsive** y con respeto básico a `prefers-reduced-motion` (sin capar la experiencia).
+
+### 🎮 Extras virales (lo que no tiene nadie)
+- **Intro cinematográfica** con la mascota **Tiki** y reveal líquido.
+- **Render del hero vivo**: la aurora cambia de color gradualmente según la hora del día (lila → azul → amarillo → naranja) en 24h, con bloom.
+- **Producto del mes** destacado en la home.
+- **Zona de juegos**: Caja Sorpresa (premio diario), ¿Cuál es más caro? (higher/lower con productos reales) y **Tiki Studio** (graba un clip con Tiki y descárgalo para TikTok).
+- **Club TikiToki**: racha diaria con **taza 3D** a los 35 días, referidos (5€), y **fondos de móvil** descargables.
+- **PWA instalable** (manifest + service worker) con aviso semanal.
+- **404 jugable** y logo con las **T latiendo**.
 
 ## 🧱 Stack
 
