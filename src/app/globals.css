@@ -381,13 +381,7 @@ h1, h2, h3, h4 {
 .blink { animation: blink 1.3s steps(1) infinite; }
 
 /* ===================== ACCESIBILIDAD =================================== */
-/* El usuario quiere la experiencia completa; mantenemos movimiento pero
-   suavizamos lo más agresivo si alguien lo pide expresamente. */
-@media (prefers-reduced-motion: reduce) {
-  .holo-text { animation: none; background-position: 0% 50%; }
-  .anim-float, .anim-spin-slow, .anim-pulse-glow { animation: none; }
-  html { scroll-behavior: auto; }
-}
+/* Experiencia completa SIEMPRE: no atenuamos por reduced-motion. */
 
 :focus-visible {
   outline: 2px solid var(--color-azul);

@@ -1,8 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { Reveal } from "@/components/text/Reveal";
 import { useScrollTo } from "@/components/providers/SmoothScroll";
-import { tileBackground } from "./ProductMedia";
 import { CATEGORIES, PRODUCTS, type CategoryKey } from "@/lib/products";
 import { cn } from "@/lib/utils";
 
@@ -56,11 +56,20 @@ export function Categories() {
               data-cursor-label="VER"
               className="group relative h-full w-full overflow-hidden rounded-[1.6rem] border border-white/10 text-left transition-colors duration-300 hover:border-[rgba(183,162,255,0.45)]"
             >
-              <div
-                className="absolute inset-0 transition-transform duration-[1.2s] ease-out group-hover:scale-110"
-                style={tileBackground(c.hue)}
+              <Image
+                src={c.image}
+                alt={c.name}
+                fill
+                sizes="(max-width: 768px) 100vw, 40vw"
+                className="object-cover transition-transform duration-[1.2s] ease-out group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-noche/85 via-noche/20 to-transparent" />
+              <div
+                className="absolute inset-0 opacity-40 mix-blend-soft-light"
+                style={{
+                  background: `linear-gradient(140deg, hsl(${c.hue} 90% 65%), transparent 70%)`,
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-noche via-noche/45 to-noche/5" />
               <div className="absolute inset-0 flex flex-col justify-end p-6">
                 <span className="mb-1 font-mono text-[0.62rem] tracking-[0.2em] text-crema/70">
                   {countOf(c.key)} PRODUCTOS

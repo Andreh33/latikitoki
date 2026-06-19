@@ -4,7 +4,7 @@ import { useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   Float,
-  MeshTransmissionMaterial,
+  MeshDistortMaterial,
   Sparkles,
   Environment,
   Lightformer,
@@ -13,9 +13,8 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 
 /* ===========================================================================
-   Render del hero — aurora holográfica de marca (lila + azul + rosa), fija.
-   Cristal de cristal facetado con núcleo que brilla + bloom. Calidad similar
-   en móvil (ajustes algo más ligeros, pero mismo look premium).
+   Render del hero — aurora holográfica de marca + GOTA DE CROMO LÍQUIDO
+   iridiscente (material firma de La TikiToki) que ondula y refleja la aurora.
    =========================================================================== */
 
 const auroraVertex = /* glsl */ `
@@ -98,49 +97,29 @@ function Aurora() {
   );
 }
 
-function Crystal({ lite }: { lite: boolean }) {
-  const mesh = useRef<THREE.Mesh>(null);
-  const core = useRef<THREE.Mesh>(null);
+/* ----------------------------- Liquid chrome ----------------------------- */
 
+function LiquidChrome({ lite }: { lite: boolean }) {
+  const mesh = useRef<THREE.Mesh>(null);
   useFrame((_, delta) => {
     if (mesh.current) {
-      mesh.current.rotation.y += delta * 0.22;
-      mesh.current.rotation.x += delta * 0.08;
-    }
-    if (core.current) {
-      core.current.rotation.y -= delta * 0.4;
-      core.current.rotation.z += delta * 0.15;
+      mesh.current.rotation.y += delta * 0.18;
+      mesh.current.rotation.x += delta * 0.06;
     }
   });
-
   return (
-    <Float speed={1.6} rotationIntensity={0.5} floatIntensity={1.1}>
-      <group scale={lite ? 1.6 : 1.95} rotation={[0.3, 0.4, 0]}>
-        <mesh ref={core} scale={0.42}>
-          <icosahedronGeometry args={[1, 0]} />
-          <meshBasicMaterial color="#d9c8ff" toneMapped={false} />
-        </mesh>
-
-        <mesh ref={mesh}>
-          <icosahedronGeometry args={[1, 0]} />
-          <MeshTransmissionMaterial
-            samples={lite ? 4 : 10}
-            resolution={lite ? 256 : 512}
-            transmission={1}
-            thickness={0.9}
-            roughness={0.04}
-            ior={1.45}
-            chromaticAberration={1}
-            anisotropy={0.3}
-            distortion={0.2}
-            distortionScale={0.3}
-            temporalDistortion={0.08}
-            color="#ffffff"
-            attenuationColor="#cdb8ff"
-            attenuationDistance={4}
-          />
-        </mesh>
-      </group>
+    <Float speed={1.5} rotationIntensity={0.35} floatIntensity={1}>
+      <mesh ref={mesh} scale={lite ? 1.85 : 2.05}>
+        <sphereGeometry args={[1, lite ? 96 : 160, lite ? 96 : 160]} />
+        <MeshDistortMaterial
+          color="#e3d9ff"
+          metalness={1}
+          roughness={0.24}
+          envMapIntensity={1.8}
+          distort={lite ? 0.3 : 0.4}
+          speed={1.8}
+        />
+      </mesh>
     </Float>
   );
 }
@@ -152,13 +131,13 @@ function Scene({ lite }: { lite: boolean }) {
   return (
     <>
       <Aurora />
-      <ambientLight intensity={0.85} />
-      <pointLight position={[5, 5, 5]} intensity={18} color="#b7a2ff" />
-      <pointLight position={[-6, -3, 2]} intensity={14} color="#82e6ff" />
-      <pointLight position={[0, -5, 4]} intensity={10} color="#ff97d6" />
+      <ambientLight intensity={0.7} />
+      <pointLight position={[5, 5, 5]} intensity={22} color="#b7a2ff" />
+      <pointLight position={[-6, -3, 2]} intensity={16} color="#82e6ff" />
+      <pointLight position={[0, -5, 4]} intensity={12} color="#ff97d6" />
 
       <group scale={scale}>
-        <Crystal lite={lite} />
+        <LiquidChrome lite={lite} />
       </group>
 
       <Sparkles
@@ -170,17 +149,21 @@ function Scene({ lite }: { lite: boolean }) {
         color="#e6dcff"
       />
 
-      <Environment resolution={lite ? 64 : 128} frames={1}>
-        <Lightformer intensity={2.4} position={[3, 3, 2]} scale={[6, 6, 1]} color="#b7a2ff" />
-        <Lightformer intensity={2} position={[-4, -2, 1]} scale={[6, 6, 1]} color="#82e6ff" />
-        <Lightformer intensity={1.6} position={[0, 3, -3]} scale={[8, 3, 1]} color="#ff97d6" />
+      {/* Entorno holográfico: lo que refleja el cromo */}
+      <Environment resolution={lite ? 128 : 256} frames={1}>
+        <color attach="background" args={["#3a2a78"]} />
+        <Lightformer intensity={3.6} position={[3, 3, 2]} scale={[8, 8, 1]} color="#b7a2ff" />
+        <Lightformer intensity={3.2} position={[-4, -1, 1]} scale={[8, 8, 1]} color="#82e6ff" />
+        <Lightformer intensity={2.8} position={[0, -3, -2]} scale={[9, 5, 1]} color="#ff97d6" />
+        <Lightformer intensity={3} position={[-2, 4, -3]} scale={[6, 6, 1]} color="#ffffff" />
+        <Lightformer intensity={2} form="ring" position={[2, 1, 3]} scale={[3.5, 3.5, 1]} color="#cdbcff" />
       </Environment>
 
       <EffectComposer>
         <Bloom
           mipmapBlur
-          intensity={lite ? 0.6 : 0.7}
-          luminanceThreshold={0.62}
+          intensity={lite ? 0.65 : 0.8}
+          luminanceThreshold={0.6}
           luminanceSmoothing={0.25}
         />
       </EffectComposer>

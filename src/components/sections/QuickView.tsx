@@ -87,11 +87,7 @@ export function QuickView() {
                 </span>
               </div>
 
-              <p className="mt-4 text-niebla">
-                {product.tagline} Diseñado para destacar en tu espacio y en tus
-                vídeos — la pieza que convierte “¿de dónde lo has sacado?” en tu
-                comentario más repetido.
-              </p>
+              <p className="mt-4 text-niebla">{product.seo}</p>
 
               <div className="mt-5 flex items-end gap-3">
                 <span className="font-display text-4xl font-extrabold holo-text-static">

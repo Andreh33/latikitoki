@@ -36,6 +36,7 @@ export interface Product {
   featured?: boolean;
   bestSeller?: boolean; // "producto del mes" destacado en la home
   image?: string; // ruta a foto real cuando exista
+  seo?: string; // descripción SEO (meta) para buscadores
 }
 
 export interface Category {
@@ -43,14 +44,15 @@ export interface Category {
   name: string;
   blurb: string;
   hue: number;
+  image: string;
 }
 
 export const CATEGORIES: Category[] = [
-  { key: "iluminacion", name: "Iluminación", blurb: "Tu cuarto, otra dimensión.", hue: 265 },
-  { key: "tech", name: "Tech & Gadgets", blurb: "Lo que no sabías que necesitabas.", hue: 210 },
-  { key: "hogar", name: "Hogar Aesthetic", blurb: "Para un feed de revista.", hue: 320 },
-  { key: "selfcare", name: "Self-care", blurb: "Glow-up sin salir de casa.", hue: 175 },
-  { key: "accesorios", name: "Accesorios", blurb: "El detalle que lo cambia todo.", hue: 290 },
+  { key: "iluminacion", name: "Iluminación", blurb: "Tu cuarto, otra dimensión.", hue: 265, image: "/productos/proyector-galaxia-aurora.jpg" },
+  { key: "tech", name: "Tech & Gadgets", blurb: "Lo que no sabías que necesitabas.", hue: 210, image: "/productos/pixel-clock.jpg" },
+  { key: "hogar", name: "Hogar Aesthetic", blurb: "Para un feed de revista.", hue: 320, image: "/productos/espejo-hollywood.jpg" },
+  { key: "selfcare", name: "Self-care", blurb: "Glow-up sin salir de casa.", hue: 175, image: "/productos/gua-sha-set.jpg" },
+  { key: "accesorios", name: "Accesorios", blurb: "El detalle que lo cambia todo.", hue: 290, image: "/productos/tote-holografico.jpg" },
 ];
 
 export const CATEGORY_MAP: Record<CategoryKey, Category> = Object.fromEntries(
@@ -99,10 +101,13 @@ const RAW_PRODUCTS: Product[] = [
   { id: "beanie-aesthetic", name: "Gorro Beanie Aesthetic", category: "accesorios", price: 14.99, tagline: "El gorro que combina con absolutamente todo.", hue: 275, rating: 4.6, proof: "Favorito del mes" },
 ];
 
-// Cada producto usa su foto real en /productos/{id}.jpg
+// Cada producto usa su foto real en /productos/{id}.jpg y una descripción SEO.
 export const PRODUCTS: Product[] = RAW_PRODUCTS.map((p) => ({
   ...p,
   image: p.image ?? `/productos/${p.id}.jpg`,
+  seo:
+    p.seo ??
+    `${p.name}: ${p.tagline} ${CATEGORY_MAP[p.category].name} viral y aesthetic de La TikiToki, con envío rápido a toda España. Lo viral, antes que nadie.`,
 }));
 
 export const FEATURED = PRODUCTS.filter((p) => p.featured);

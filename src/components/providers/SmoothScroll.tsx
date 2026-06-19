@@ -19,18 +19,15 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
-    const reduce = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
     // Empezar siempre arriba (evita restauración de scroll del navegador)
     if ("scrollRestoration" in history) history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
 
+    // Experiencia completa siempre (sin reduced-motion)
     const lenis = new Lenis({
-      duration: reduce ? 0 : 1.15,
-      lerp: reduce ? 1 : 0.09,
-      smoothWheel: !reduce,
+      duration: 1.15,
+      lerp: 0.09,
+      smoothWheel: true,
       wheelMultiplier: 1,
       touchMultiplier: 1.6,
     });
