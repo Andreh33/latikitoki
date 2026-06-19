@@ -14,7 +14,8 @@ import * as THREE from "three";
 
 /* ===========================================================================
    Render del hero — aurora holográfica de marca (lila + azul + rosa), fija.
-   Cristal facetado con núcleo que brilla + bloom.
+   Cristal de cristal facetado con núcleo que brilla + bloom. Calidad similar
+   en móvil (ajustes algo más ligeros, pero mismo look premium).
    =========================================================================== */
 
 const auroraVertex = /* glsl */ `
@@ -68,7 +69,7 @@ const auroraFragment = /* glsl */ `
     col = mix(col, azul, smoothstep(0.55, 1.02, n2) * 0.8);
     col = mix(col, rosa, smoothstep(0.62, 1.08, n * n2) * 0.55);
 
-    col *= 0.9;
+    col *= 0.92;
     float d = distance(uv, vec2(0.5));
     col *= smoothstep(1.25, 0.12, d);
     col += lila * 0.05 * (1.0 - d);
@@ -97,8 +98,6 @@ function Aurora() {
   );
 }
 
-/* ------------------------------ Glass crystal ---------------------------- */
-
 function Crystal({ lite }: { lite: boolean }) {
   const mesh = useRef<THREE.Mesh>(null);
   const core = useRef<THREE.Mesh>(null);
@@ -116,8 +115,7 @@ function Crystal({ lite }: { lite: boolean }) {
 
   return (
     <Float speed={1.6} rotationIntensity={0.5} floatIntensity={1.1}>
-      <group scale={lite ? 1.7 : 1.95} rotation={[0.3, 0.4, 0]}>
-        {/* núcleo que brilla (lo capta el bloom a través del cristal) */}
+      <group scale={lite ? 1.6 : 1.95} rotation={[0.3, 0.4, 0]}>
         <mesh ref={core} scale={0.42}>
           <icosahedronGeometry args={[1, 0]} />
           <meshBasicMaterial color="#d9c8ff" toneMapped={false} />
@@ -125,40 +123,27 @@ function Crystal({ lite }: { lite: boolean }) {
 
         <mesh ref={mesh}>
           <icosahedronGeometry args={[1, 0]} />
-          {lite ? (
-            <meshStandardMaterial
-              color="#c4b3ff"
-              emissive="#7b54ff"
-              emissiveIntensity={0.55}
-              metalness={0.5}
-              roughness={0.15}
-              flatShading
-            />
-          ) : (
-            <MeshTransmissionMaterial
-              samples={10}
-              resolution={512}
-              transmission={1}
-              thickness={0.9}
-              roughness={0.03}
-              ior={1.45}
-              chromaticAberration={1}
-              anisotropy={0.35}
-              distortion={0.2}
-              distortionScale={0.3}
-              temporalDistortion={0.08}
-              color="#ffffff"
-              attenuationColor="#cdb8ff"
-              attenuationDistance={4}
-            />
-          )}
+          <MeshTransmissionMaterial
+            samples={lite ? 4 : 10}
+            resolution={lite ? 256 : 512}
+            transmission={1}
+            thickness={0.9}
+            roughness={0.04}
+            ior={1.45}
+            chromaticAberration={1}
+            anisotropy={0.3}
+            distortion={0.2}
+            distortionScale={0.3}
+            temporalDistortion={0.08}
+            color="#ffffff"
+            attenuationColor="#cdb8ff"
+            attenuationDistance={4}
+          />
         </mesh>
       </group>
     </Float>
   );
 }
-
-/* -------------------------------- Scene --------------------------------- */
 
 function Scene({ lite }: { lite: boolean }) {
   const { viewport } = useThree();
@@ -167,7 +152,7 @@ function Scene({ lite }: { lite: boolean }) {
   return (
     <>
       <Aurora />
-      <ambientLight intensity={0.8} />
+      <ambientLight intensity={0.85} />
       <pointLight position={[5, 5, 5]} intensity={18} color="#b7a2ff" />
       <pointLight position={[-6, -3, 2]} intensity={14} color="#82e6ff" />
       <pointLight position={[0, -5, 4]} intensity={10} color="#ff97d6" />
@@ -177,7 +162,7 @@ function Scene({ lite }: { lite: boolean }) {
       </group>
 
       <Sparkles
-        count={lite ? 50 : 130}
+        count={lite ? 70 : 130}
         scale={[15, 9, 6]}
         size={3}
         speed={0.3}
@@ -185,24 +170,20 @@ function Scene({ lite }: { lite: boolean }) {
         color="#e6dcff"
       />
 
-      {!lite && (
-        <Environment resolution={128} frames={1}>
-          <Lightformer intensity={2.4} position={[3, 3, 2]} scale={[6, 6, 1]} color="#b7a2ff" />
-          <Lightformer intensity={2} position={[-4, -2, 1]} scale={[6, 6, 1]} color="#82e6ff" />
-          <Lightformer intensity={1.6} position={[0, 3, -3]} scale={[8, 3, 1]} color="#ff97d6" />
-        </Environment>
-      )}
+      <Environment resolution={lite ? 64 : 128} frames={1}>
+        <Lightformer intensity={2.4} position={[3, 3, 2]} scale={[6, 6, 1]} color="#b7a2ff" />
+        <Lightformer intensity={2} position={[-4, -2, 1]} scale={[6, 6, 1]} color="#82e6ff" />
+        <Lightformer intensity={1.6} position={[0, 3, -3]} scale={[8, 3, 1]} color="#ff97d6" />
+      </Environment>
 
-      {!lite && (
-        <EffectComposer>
-          <Bloom
-            mipmapBlur
-            intensity={0.7}
-            luminanceThreshold={0.62}
-            luminanceSmoothing={0.25}
-          />
-        </EffectComposer>
-      )}
+      <EffectComposer>
+        <Bloom
+          mipmapBlur
+          intensity={lite ? 0.6 : 0.7}
+          luminanceThreshold={0.62}
+          luminanceSmoothing={0.25}
+        />
+      </EffectComposer>
     </>
   );
 }
@@ -212,7 +193,7 @@ export default function HeroCanvas({ lite = false }: { lite?: boolean }) {
     <Canvas
       className="!pointer-events-none"
       camera={{ position: [0, 0, 6], fov: 40 }}
-      dpr={lite ? [1, 1.3] : [1, 1.8]}
+      dpr={lite ? [1, 2] : [1, 1.8]}
       gl={{ antialias: true, alpha: true }}
     >
       <Scene lite={lite} />

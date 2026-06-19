@@ -63,6 +63,8 @@ html {
   color: var(--color-crema);
   scroll-behavior: auto; /* Lenis controla el scroll */
   -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden; /* sin scroll horizontal en móvil */
+  width: 100%;
 }
 
 body {
