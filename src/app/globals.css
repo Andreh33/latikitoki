@@ -1,0 +1,344 @@
+@import "tailwindcss";
+
+/* ===========================================================================
+   LA TIKITOKI — SISTEMA DE DISEÑO
+   Concepto: "Aurora holográfica" — noche violeta profunda + luz lila/azul/rosa
+   que se enciende al hacer scroll. Joven, premium, irrepetible.
+   =========================================================================== */
+
+@theme {
+  /* — Color — */
+  --color-noche: #070411;
+  --color-noche-2: #0d0820;
+  --color-panel: #140d2b;
+  --color-panel-2: #1b1238;
+
+  --color-lila: #b7a2ff;
+  --color-lila-bright: #8b5cf6;
+  --color-violeta: #6d3bf5;
+  --color-azul: #82e6ff;
+  --color-azul-deep: #46c2ff;
+  --color-rosa: #ff97d6;
+
+  --color-crema: #f4f0ff;
+  --color-niebla: #a99fce;
+  --color-niebla-dim: #5b5278;
+
+  /* — Tipografía — */
+  --font-display: var(--font-bricolage), "Geist", system-ui, sans-serif;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* — Sombras / elevación — */
+  --shadow-glow: 0 0 60px -12px rgba(139, 92, 246, 0.55);
+  --shadow-card: 0 24px 60px -28px rgba(0, 0, 0, 0.9);
+
+  /* — Easings — */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+:root {
+  --holo: linear-gradient(105deg, #b7a2ff 0%, #82e6ff 52%, #ff97d6 100%);
+  --holo-soft: linear-gradient(105deg, #c8b8ff 0%, #a6ecff 55%, #ffb4e2 100%);
+  --holo-conic: conic-gradient(
+    from 140deg,
+    #b7a2ff,
+    #82e6ff,
+    #ff97d6,
+    #8b5cf6,
+    #b7a2ff
+  );
+}
+
+/* ============================= BASE ===================================== */
+
+* {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  background: var(--color-noche);
+  color: var(--color-crema);
+  scroll-behavior: auto; /* Lenis controla el scroll */
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-noche);
+  color: var(--color-crema);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+  cursor: none; /* cursor personalizado */
+}
+
+/* Restaura el cursor en táctil (sin cursor custom) */
+@media (hover: none), (pointer: coarse) {
+  body { cursor: auto; }
+}
+
+::selection {
+  background: rgba(139, 92, 246, 0.35);
+  color: #fff;
+}
+
+/* Scrollbar fino y holográfico */
+::-webkit-scrollbar { width: 0px; height: 0px; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+
+/* ===================== TIPOGRAFÍA FLUIDA ================================= */
+
+.t-mega   { font-size: clamp(3.2rem, 13vw, 13rem); }
+.t-giant  { font-size: clamp(2.6rem, 9vw, 8.5rem); }
+.t-h1     { font-size: clamp(2.2rem, 6.5vw, 5.5rem); }
+.t-h2     { font-size: clamp(1.8rem, 4.5vw, 3.6rem); }
+.t-lead   { font-size: clamp(1.05rem, 1.8vw, 1.5rem); }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--color-niebla);
+}
+
+/* ===================== UTILIDADES HOLOGRÁFICAS ========================== */
+
+.holo-text {
+  background: var(--holo);
+  background-size: 180% 180%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: holoPan 9s ease-in-out infinite;
+}
+
+.holo-text-static {
+  background: var(--holo);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.text-glow {
+  text-shadow: 0 0 28px rgba(139, 92, 246, 0.55),
+    0 0 6px rgba(130, 230, 255, 0.4);
+}
+
+.glass {
+  background: linear-gradient(
+    160deg,
+    rgba(183, 162, 255, 0.09),
+    rgba(130, 230, 255, 0.04) 60%,
+    rgba(255, 255, 255, 0.02)
+  );
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(183, 162, 255, 0.16);
+}
+
+.glass-strong {
+  background: linear-gradient(
+    160deg,
+    rgba(20, 13, 43, 0.86),
+    rgba(13, 8, 32, 0.92)
+  );
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid rgba(183, 162, 255, 0.18);
+}
+
+/* Borde con gradiente holográfico (técnica doble background) */
+.holo-ring {
+  position: relative;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--color-noche-2), var(--color-noche-2)) padding-box,
+    var(--holo) border-box;
+}
+.holo-ring-conic {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--color-panel), var(--color-panel)) padding-box,
+    var(--holo-conic) border-box;
+}
+
+.glow-spot {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.5;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Botón holográfico */
+.btn-holo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.9rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #1a0f33;
+  background: var(--holo);
+  background-size: 160% 160%;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s ease;
+  box-shadow: 0 10px 40px -12px rgba(139, 92, 246, 0.7);
+}
+.btn-holo:hover { box-shadow: 0 16px 60px -10px rgba(139, 92, 246, 0.95); }
+.btn-holo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.65) 50%,
+    transparent 80%
+  );
+  transform: translateX(-120%);
+  z-index: -1;
+}
+.btn-holo:hover::after { animation: sheen 0.9s ease; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.95rem 1.6rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: var(--color-crema);
+  border: 1px solid rgba(183, 162, 255, 0.28);
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+.btn-ghost:hover {
+  border-color: rgba(183, 162, 255, 0.7);
+  background: rgba(183, 162, 255, 0.06);
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(183, 162, 255, 0.22);
+  color: var(--color-lila);
+  background: rgba(183, 162, 255, 0.05);
+}
+
+/* Palabra que se ilumina con el scroll (estado base apagado) */
+.il-word {
+  color: rgba(244, 240, 255, 0.12);
+  transition: none;
+}
+
+/* Línea fina divisoria */
+.hairline {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(183, 162, 255, 0.4),
+    transparent
+  );
+}
+
+/* Grano de película — textura premium */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Retícula sutil de fondo */
+.bg-grid {
+  background-image: linear-gradient(
+      rgba(183, 162, 255, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(183, 162, 255, 0.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 78%);
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 78%);
+}
+
+/* ===================== ANIMACIONES ===================================== */
+
+@keyframes holoPan {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes sheen {
+  to { transform: translateX(120%); }
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes spinSlow {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes marqueeX {
+  to { transform: translateX(-50%); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
+@keyframes scrollDot {
+  0% { transform: translateY(-110%); }
+  100% { transform: translateY(260%); }
+}
+
+.anim-float { animation: floaty 6s ease-in-out infinite; }
+.anim-spin-slow { animation: spinSlow 26s linear infinite; }
+.anim-pulse-glow { animation: pulseGlow 5s ease-in-out infinite; }
+.blink { animation: blink 1.3s steps(1) infinite; }
+
+/* ===================== ACCESIBILIDAD =================================== */
+/* El usuario quiere la experiencia completa; mantenemos movimiento pero
+   suavizamos lo más agresivo si alguien lo pide expresamente. */
+@media (prefers-reduced-motion: reduce) {
+  .holo-text { animation: none; background-position: 0% 50%; }
+  .anim-float, .anim-spin-slow, .anim-pulse-glow { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-azul);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
