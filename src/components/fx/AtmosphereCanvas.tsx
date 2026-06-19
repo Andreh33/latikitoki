@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 const vertex = /* glsl */ `
@@ -67,16 +67,18 @@ function Plane() {
     };
   }, [uniforms]);
 
+  const { viewport } = useThree();
+
   useFrame((_, delta) => {
     if (!mat.current) return;
-    mat.current.uniforms.uTime.value += delta;
+    mat.current.uniforms.uTime.value += Math.min(delta, 0.05);
     mat.current.uniforms.uScroll.value = window.scrollY;
     (mat.current.uniforms.uMouse.value as THREE.Vector2).lerp(mouse.current, 0.05);
   });
 
   return (
-    <mesh>
-      <planeGeometry args={[2, 2]} />
+    <mesh scale={[viewport.width, viewport.height, 1]}>
+      <planeGeometry args={[1, 1]} />
       <shaderMaterial ref={mat} vertexShader={vertex} fragmentShader={fragment} uniforms={uniforms} depthWrite={false} />
     </mesh>
   );
@@ -85,8 +87,6 @@ function Plane() {
 export default function AtmosphereCanvas() {
   return (
     <Canvas
-      orthographic
-      camera={{ position: [0, 0, 1], zoom: 1 }}
       dpr={1}
       gl={{ antialias: false, alpha: false }}
       style={{ position: "fixed", inset: 0, zIndex: -1, pointerEvents: "none" }}
