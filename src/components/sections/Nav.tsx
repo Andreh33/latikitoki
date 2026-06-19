@@ -11,9 +11,9 @@ import { cn } from "@/lib/utils";
 const LINKS = [
   { label: "Inicio", id: "inicio" },
   { label: "Tienda", id: "tienda" },
+  { label: "Tu Cuarto", id: "cuarto" },
   { label: "Juegos", id: "juegos" },
   { label: "Club", id: "club" },
-  { label: "El Drop", id: "drop" },
 ];
 
 function BagIcon() {

@@ -4,6 +4,7 @@ import { Manifesto } from "@/components/sections/Manifesto";
 import { Featured } from "@/components/sections/Featured";
 import { Categories } from "@/components/sections/Categories";
 import { Catalog } from "@/components/sections/Catalog";
+import { TuCuarto } from "@/components/sections/TuCuarto";
 import { Arcade } from "@/components/sections/Arcade";
 import { ClubSection } from "@/components/sections/ClubSection";
 import { Values } from "@/components/sections/Values";
@@ -22,6 +23,7 @@ export default function Home() {
       <Featured />
       <Categories />
       <Catalog />
+      <TuCuarto />
       <LiquidDivider />
       <Arcade />
       <ClubSection />

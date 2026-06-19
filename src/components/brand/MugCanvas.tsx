@@ -73,15 +73,17 @@ function Mug() {
           <torusGeometry args={[1.0, 0.045, 24, 96]} />
           <meshPhysicalMaterial color="#ffffff" roughness={0.15} clearcoat={1} />
         </mesh>
-        {/* asa */}
-        <mesh position={[1.04, 0, 0]}>
-          <torusGeometry args={[0.46, 0.12, 28, 64, Math.PI * 1.3]} />
+        {/* asa: aro vertical en el lateral (la taza oculta la parte interior) */}
+        <mesh position={[1.0, -0.05, 0]}>
+          <torusGeometry args={[0.52, 0.1, 24, 96]} />
           <meshPhysicalMaterial
-            color="#f7f3ff"
+            map={label}
             roughness={0.22}
+            metalness={0.05}
             clearcoat={1}
             clearcoatRoughness={0.18}
             iridescence={0.3}
+            iridescenceIOR={1.3}
           />
         </mesh>
       </group>

@@ -124,6 +124,55 @@ function LiquidChrome({ lite }: { lite: boolean }) {
   );
 }
 
+function Droplets({ lite }: { lite: boolean }) {
+  const data = useMemo(
+    () => [
+      { r: 3.4, y: 1.4, s: 0.3, speed: 0.45, phase: 0 },
+      { r: 3.7, y: -1.5, s: 0.22, speed: -0.38, phase: 2.1 },
+      { r: 3.2, y: -0.4, s: 0.18, speed: 0.6, phase: 4.2 },
+    ],
+    [],
+  );
+  const refs = useRef<THREE.Mesh[]>([]);
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    data.forEach((d, i) => {
+      const m = refs.current[i];
+      if (!m) return;
+      const a = t * d.speed + d.phase;
+      m.position.set(
+        Math.cos(a) * d.r,
+        d.y + Math.sin(t * 0.7 + i) * 0.3,
+        Math.sin(a) * d.r * 0.5 - 1,
+      );
+    });
+  });
+  if (lite) return null;
+  return (
+    <group>
+      {data.map((d, i) => (
+        <mesh
+          key={i}
+          ref={(el) => {
+            if (el) refs.current[i] = el;
+          }}
+          scale={d.s}
+        >
+          <sphereGeometry args={[1, 48, 48]} />
+          <MeshDistortMaterial
+            color="#e3d9ff"
+            metalness={1}
+            roughness={0.22}
+            envMapIntensity={1.8}
+            distort={0.55}
+            speed={2.6}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function Scene({ lite }: { lite: boolean }) {
   const { viewport } = useThree();
   const scale = Math.min(1, viewport.width / 8);
@@ -138,6 +187,7 @@ function Scene({ lite }: { lite: boolean }) {
 
       <group scale={scale}>
         <LiquidChrome lite={lite} />
+        <Droplets lite={lite} />
       </group>
 
       <Sparkles
