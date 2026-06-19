@@ -57,7 +57,7 @@ export const CATEGORY_MAP: Record<CategoryKey, Category> = Object.fromEntries(
   CATEGORIES.map((c) => [c.key, c]),
 ) as Record<CategoryKey, Category>;
 
-export const PRODUCTS: Product[] = [
+const RAW_PRODUCTS: Product[] = [
   // — Iluminación —
   { id: "proyector-galaxia-aurora", name: "Proyector Galaxia Aurora", category: "iluminacion", price: 34.99, compareAt: 59.99, tagline: "Convierte tu techo en una galaxia entera.", badge: "VIRAL", hue: 262, rating: 4.9, proof: "Viral en TikTok", featured: true, bestSeller: true },
   { id: "astronauta-nebulosa", name: "Astronauta Proyector Nebulosa", category: "iluminacion", price: 39.99, tagline: "El astronauta que flota en tu nebulosa privada.", badge: "TOP VENTAS", hue: 248, rating: 4.8, proof: "Top de la semana", featured: true },
@@ -98,6 +98,12 @@ export const PRODUCTS: Product[] = [
   { id: "rinonera-cyber", name: "Riñonera Crossbody Cyber", category: "accesorios", price: 21.99, tagline: "Manos libres con actitud. Reflectante de noche.", badge: "NUEVO", hue: 198, rating: 4.5, proof: "Recién llegado" },
   { id: "beanie-aesthetic", name: "Gorro Beanie Aesthetic", category: "accesorios", price: 14.99, tagline: "El gorro que combina con absolutamente todo.", hue: 275, rating: 4.6, proof: "Favorito del mes" },
 ];
+
+// Cada producto usa su foto real en /productos/{id}.jpg
+export const PRODUCTS: Product[] = RAW_PRODUCTS.map((p) => ({
+  ...p,
+  image: p.image ?? `/productos/${p.id}.jpg`,
+}));
 
 export const FEATURED = PRODUCTS.filter((p) => p.featured);
 
