@@ -68,7 +68,7 @@ html {
 }
 
 body {
-  background: var(--color-noche);
+  background: transparent; /* deja ver la atmósfera WebGL detrás */
   color: var(--color-crema);
   font-family: var(--font-sans);
   overflow-x: clip;
@@ -77,6 +77,39 @@ body {
 ::selection {
   background: rgba(139, 92, 246, 0.35);
   color: #fff;
+}
+
+/* ===== Post-FX de pantalla (#1) ===== */
+.screen-scanlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.03) 0px,
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: overlay;
+  opacity: 0.5;
+}
+.screen-beam {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(183, 162, 255, 0.05),
+    rgba(130, 230, 255, 0.04),
+    transparent
+  );
+  animation: scanBeam 9s linear infinite;
+}
+@keyframes scanBeam {
+  0% { transform: translateY(-30vh); }
+  100% { transform: translateY(130vh); }
+}
+
+/* ===== Scroll líquido (#2): inclina según la velocidad de scroll ===== */
+.liquid-scroll {
+  transform: skewY(calc(var(--sv, 0) * 0.55deg));
+  will-change: transform;
 }
 
 /* Scrollbar fino y holográfico */
@@ -93,8 +126,8 @@ h1, h2, h3, h4 {
 
 .t-mega   { font-size: clamp(3.2rem, 13vw, 13rem); }
 .t-giant  { font-size: clamp(2.6rem, 9vw, 8.5rem); }
-.t-h1     { font-size: clamp(2.2rem, 6.5vw, 5.5rem); }
-.t-h2     { font-size: clamp(1.8rem, 4.5vw, 3.6rem); }
+.t-h1     { font-size: clamp(2.2rem, 6.5vw, 5.5rem); transform: skewY(calc(var(--sv, 0) * 0.5deg)); will-change: transform; }
+.t-h2     { font-size: clamp(1.8rem, 4.5vw, 3.6rem); transform: skewY(calc(var(--sv, 0) * 0.5deg)); will-change: transform; }
 .t-lead   { font-size: clamp(1.05rem, 1.8vw, 1.5rem); }
 
 .eyebrow {

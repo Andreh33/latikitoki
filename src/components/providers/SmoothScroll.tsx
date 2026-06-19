@@ -35,7 +35,12 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     lenis.scrollTo(0, { immediate: true });
 
     // Sincronizar Lenis con el ticker de GSAP y ScrollTrigger
-    lenis.on("scroll", ScrollTrigger.update);
+    // + alimentar --sv (velocidad de scroll normalizada) para el scroll líquido
+    lenis.on("scroll", () => {
+      ScrollTrigger.update();
+      const v = Math.max(-1, Math.min(1, lenis.velocity / 35));
+      document.documentElement.style.setProperty("--sv", v.toFixed(3));
+    });
 
     const update = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(update);

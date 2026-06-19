@@ -9,12 +9,15 @@ import { Nav } from "@/components/sections/Nav";
 import { CartDrawer } from "@/components/sections/CartDrawer";
 import { QuickView } from "@/components/sections/QuickView";
 import { PWA } from "./PWA";
+import { Atmosphere } from "@/components/fx/Atmosphere";
+import { ScreenFX } from "@/components/fx/ScreenFX";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <CartProvider>
       <QuickViewProvider>
         <SmoothScroll>
+          <Atmosphere />
           <Preloader />
           <ScrollProgress />
           <Nav />
@@ -22,6 +25,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           <CartDrawer />
           <QuickView />
           <PWA />
+          <ScreenFX />
         </SmoothScroll>
       </QuickViewProvider>
     </CartProvider>
