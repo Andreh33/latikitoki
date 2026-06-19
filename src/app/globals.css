@@ -70,12 +70,6 @@ body {
   color: var(--color-crema);
   font-family: var(--font-sans);
   overflow-x: clip;
-  cursor: none; /* cursor personalizado */
-}
-
-/* Restaura el cursor en táctil (sin cursor custom) */
-@media (hover: none), (pointer: coarse) {
-  body { cursor: auto; }
 }
 
 ::selection {
