@@ -48,3 +48,5 @@ next-env.d.ts
 
 # scratch temporales de agentes
 _tmp_*
+
+.claude/scheduled_tasks.lock
