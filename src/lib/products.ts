@@ -37,6 +37,7 @@ export interface Product {
   bestSeller?: boolean; // "producto del mes" destacado en la home
   image?: string; // ruta a foto real cuando exista
   seo?: string; // descripción SEO (meta) para buscadores
+  collection?: string; // id de colección curada (ver COLLECTIONS)
 }
 
 export interface Category {
@@ -58,6 +59,55 @@ export const CATEGORIES: Category[] = [
 export const CATEGORY_MAP: Record<CategoryKey, Category> = Object.fromEntries(
   CATEGORIES.map((c) => [c.key, c]),
 ) as Record<CategoryKey, Category>;
+
+/** Colecciones curadas (edits con nombre) para que el catálogo parezca selección, no bazar. */
+export interface Collection {
+  id: string;
+  name: string;
+  blurb: string;
+}
+
+export const COLLECTIONS: Collection[] = [
+  { id: "el-cuarto", name: "El Cuarto", blurb: "Luz y deco que transforman tu habitación." },
+  { id: "glow-up", name: "Glow Up", blurb: "Skincare, beauty y autocuidado." },
+  { id: "that-girl", name: "That Girl", blurb: "Fitness y bienestar, modo it-girl." },
+  { id: "y2k-coquette", name: "Y2K & Coquette", blurb: "Moda y accesorios aesthetic." },
+  { id: "setup-tech", name: "Setup & Tech", blurb: "Gadgets, gaming y tu escritorio." },
+  { id: "cocina-viral", name: "Cocina Viral", blurb: "Los gadgets de cocina que petan." },
+  { id: "pet-club", name: "Pet Club", blurb: "Para el rey de la casa." },
+  { id: "on-tour", name: "On Tour", blurb: "Viaje y coche con estilo." },
+  { id: "papeleria-cute", name: "Papelería Cute", blurb: "Journaling y vuelta al cole aesthetic." },
+];
+
+export const COLLECTION_IDS = COLLECTIONS.map((c) => c.id);
+
+/** Deriva una colección para productos que no la traigan explícita (los 209 existentes). */
+export function deriveCollection(p: Product): string {
+  const t = `${p.id} ${p.name}`.toLowerCase();
+  const has = (...w: string[]) => w.some((x) => t.includes(x));
+  if (has("perro", "gato", "mascota", "comedero", "deshedding", "quitapelos", "bandana", "antiatragant", "peludo")) return "pet-club";
+  if (has("washi", "sticker", "journal", "boligraf", "cuaderno", "estuche", "notas", "sello", "planner", "marcador", "lapices", "posters", "poster")) return "papeleria-cute";
+  if (has("viaje", "maleta", "equipaje", "coche", "car", "neceser", "pasaporte", "adaptador-universal", "cervical", "organizador-cables", "compresion")) return "on-tour";
+  if (has("cocina", "hervidor", "cortador", "spray", "wafflera", "helado", "molde", "cubo-basura", "dispensador", "espumador", "selladora", "bascula-cocina", "cereal")) return "cocina-viral";
+  if (p.category === "selfcare") {
+    if (has("gym", "pilates", "banda", "mancuerna", "stepper", "yoga", "abdominal", "fitness", "rueda", "comba", "pistola-masaje", "resistencia", "botella")) return "that-girl";
+    return "glow-up";
+  }
+  if (p.category === "iluminacion") return "el-cuarto";
+  if (p.category === "tech") return "setup-tech";
+  if (p.category === "accesorios") {
+    if (has("top", "vestido", "falda", "pantalon", "cardigan", "calcetines", "medias", "lazo", "bolso", "gafas", "beanie", "gorro", "pendientes", "collar", "anillo", "pulsera", "joyer", "charm", "broche", "choker", "cami", "corse", "babydoll", "lencero", "calentador", "phone-strap", "strap")) return "y2k-coquette";
+    return "on-tour";
+  }
+  // hogar y resto → deco del cuarto
+  return "el-cuarto";
+}
+
+export function collectionOf(p: Product): string {
+  return p.collection && COLLECTION_IDS.includes(p.collection)
+    ? p.collection
+    : deriveCollection(p);
+}
 
 const RAW_PRODUCTS: Product[] = [
   // — Iluminación —
@@ -294,6 +344,33 @@ const RAW_PRODUCTS: Product[] = [
   { id: "set-posters-pastel-matisse", name: "Set Posters Pastel / Matisse Wall Art", category: "hogar", price: 13.99, hue: 35, rating: 4.5, proof: "Lo más guardado", tagline: "El gallery wall barato: pósters pastel para tu decorate with me.", seo: "Set de pósters aesthetic (danish pastel / estilo Matisse) para gallery wall, el relleno perfecto y barato de una pared de arte. Aesthetic viral 2026." },
   { id: "bandeja-espejo-ondulada-vanity", name: "Bandeja Espejo Ondulada Vanity Tray", category: "hogar", price: 15.99, badge: "TRENDING", hue: 290, rating: 4.6, proof: "Tendencia 2026", tagline: "La vanity tray ondulada que es base de toda perfume shelf aesthetic.", seo: "Bandeja-espejo de borde ondulado (vanity tray) para organizar perfumes y joyas, la pieza de la estantería de tocador viral. Aesthetic clean girl." },
   { id: "funda-cojin-damero-knit", name: "Funda Cojín Cuadros Damero Knit (pack 2)", category: "hogar", price: 16.99, hue: 285, rating: 4.6, proof: "El más buscado", tagline: "El damero low cost en la cama: print checkered para un room refresh.", seo: "Pack de fundas de cojín de punto a cuadros damero (checkered), traslada el print viral a la cama o el sofá de forma barata. Aesthetic danish pastel viral." },
+
+  // — Otras fuentes · Tanda A —
+  { id: "mini-batidora-portatil-usb", name: "Mini Batidora Portátil USB Smoothie", category: "tech", price: 24.99, badge: "VIRAL", hue: 175, rating: 4.7, proof: "Viral en TikTok", collection: "cocina-viral", tagline: "Tu smoothie recién hecho donde sea: bates, tapas y bebes del mismo vaso.", seo: "Mini batidora portátil recargable por USB con vaso integrado: prepara batidos, smoothies y proteínas al momento en casa, gym u oficina. Cuchillas de acero, sin cables, aesthetic." },
+  { id: "taza-cristal-bambu-pajita", name: "Vaso Cristal con Tapa Bambú y Pajita", category: "hogar", price: 14.99, hue: 40, rating: 4.7, proof: "Lo más guardado", collection: "cocina-viral", tagline: "El iced latte de cafetería aesthetic en tu propia cocina.", seo: "Vaso de cristal con tapa de bambú y pajita de cristal reutilizable: el imprescindible aesthetic para iced coffee, matcha y boba en casa. Coffee bar de revista, eco y reutilizable." },
+  { id: "vaso-termo-asa-pajita-40oz", name: "Vaso Térmico 1,1L con Asa y Pajita", category: "hogar", price: 27.99, badge: "TRENDING", hue: 200, rating: 4.8, proof: "Tendencia 2026", collection: "that-girl", tagline: "El tumbler que va contigo a todas partes y mantiene el hielo horas.", seo: "Vaso térmico de acero inoxidable de 1,1L (40oz) con asa, tapa y pajita: mantiene las bebidas frías durante horas y cabe en el portavasos. El tumbler viral that girl para hidratarte con estilo." },
+  { id: "calientatazas-usb-posavasos", name: "Calientatazas USB Posavasos Inteligente", category: "tech", price: 19.99, hue: 25, rating: 4.6, proof: "El más buscado", collection: "setup-tech", tagline: "Café siempre calentito en tu escritorio: se enciende solo al posar la taza.", seo: "Calientatazas USB tipo posavasos con sensor de gravedad: mantiene el café, té o infusión a temperatura constante en el escritorio y se enciende solo al poner la taza. Gadget aesthetic para el setup." },
+  { id: "lampara-calienta-velas-cera", name: "Lámpara Calienta Velas y Cera Eléctrica", category: "hogar", price: 29.99, badge: "TRENDING", hue: 35, rating: 4.7, proof: "Tendencia 2026", collection: "el-cuarto", tagline: "Derrite la vela desde arriba: todo el aroma, cero llama.", seo: "Lámpara calienta velas eléctrica (candle warmer lamp) con altura regulable e intensidad ajustable: funde velas en tarro y cera aromática sin llama y libera el aroma de forma segura. Deco aesthetic viral." },
+  { id: "cepillo-secador-volumen-blowout", name: "Cepillo Secador Volumen Blowout", category: "selfcare", price: 34.99, compareAt: 49.99, badge: "TOP VENTAS", hue: 320, rating: 4.7, proof: "Top de la semana", collection: "glow-up", tagline: "El brushing de peluquería en casa: seca y da volumen en una pasada.", seo: "Cepillo secador con aire caliente (hot air brush / blowout brush): seca, alisa y da volumen a la vez para un brushing de peluquería en casa. Tecnología iónica antifrizz, el beauty tool viral." },
+  { id: "masajeador-cuero-cabelludo-electrico", name: "Masajeador Cuero Cabelludo Eléctrico", category: "selfcare", price: 18.99, hue: 175, rating: 4.6, proof: "Lo más guardado", collection: "glow-up", tagline: "El masaje capilar satisfying que relaja y activa el cuero cabelludo.", seo: "Masajeador de cuero cabelludo eléctrico e impermeable (scalp massager): exfolia, limpia en la ducha y da un masaje relajante en seco. Recargable IPX7, el gadget de self-care viral para el pelo." },
+  { id: "vaporizador-facial-nano", name: "Vaporizador Facial Nano Iónico", category: "selfcare", price: 24.99, hue: 185, rating: 4.6, proof: "Favorito del mes", collection: "glow-up", tagline: "El spa facial en casa: vapor nano que abre poros y prepara la piel.", seo: "Vaporizador facial nano iónico (face steamer): vapor caliente que hidrata, abre los poros y prepara la piel antes del skincare. Spa en casa para una rutina glow-up aesthetic viral." },
+  { id: "organizador-brochas-acrilico-tapa", name: "Organizador Brochas Acrílico con Tapa", category: "hogar", price: 16.99, hue: 300, rating: 4.6, proof: "El más buscado", collection: "glow-up", tagline: "Tus brochas a la vista, ordenadas y sin polvo en el tocador.", seo: "Organizador de brochas de maquillaje en acrílico transparente con tapa antipolvo: mantiene los pinceles a la vista y ordenados en el tocador. Pieza clean girl para una vanity aesthetic." },
+  { id: "mini-nevera-skincare-portatil", name: "Mini Nevera Skincare Portátil con Espejo", category: "selfcare", price: 49.99, compareAt: 69.99, badge: "VIRAL", hue: 330, rating: 4.7, proof: "Viral en TikTok", collection: "glow-up", tagline: "Tus sérums y cremas siempre fríos: el frío que potencia el skincare.", seo: "Mini nevera de skincare portátil (4L) con espejo LED y modo frío/calor: conserva sérums, cremas y mascarillas a temperatura ideal para potenciar el glow. La mini fridge rosa viral del tocador." },
+  { id: "reloj-espejo-led-usb-mesa", name: "Reloj Espejo LED con Puertos USB", category: "tech", price: 21.99, hue: 210, rating: 4.6, proof: "Lo más guardado", collection: "setup-tech", tagline: "Reloj, espejo y cargador en uno: la mesita de noche aesthetic definitiva.", seo: "Reloj despertador digital con pantalla LED espejo y doble puerto USB: muestra la hora con brillo regulable, sirve de espejo y carga el móvil en la mesita. Gadget minimal para el setup y el dormitorio." },
+  { id: "alfombra-bano-diatomea-piedra", name: "Alfombra de Baño Piedra Diatomea", category: "hogar", price: 26.99, badge: "TRENDING", hue: 30, rating: 4.7, proof: "Tendencia 2026", collection: "el-cuarto", tagline: "Pisas mojado y se seca al instante: el suelo del baño que petó en TikTok.", seo: "Alfombra de baño de piedra de diatomea (diatomaceous earth): absorbe el agua de los pies y se seca en segundos, antideslizante y fácil de limpiar. El upgrade aesthetic y práctico del baño viral." },
+  { id: "lampara-seta-cristal-rayada", name: "Lámpara Seta Cristal Rayado Mushroom", category: "iluminacion", price: 29.99, badge: "TRENDING", hue: 320, rating: 4.7, proof: "Tendencia 2026", collection: "el-cuarto", tagline: "La mushroom lamp de cristal soplado que define el cuarto aesthetic.", seo: "Lámpara de mesa con forma de seta en cristal rayado estilo Murano (mushroom lamp): luz cálida y difusa regulable para la mesita o el escritorio. La pieza deco vintage-aesthetic más viral de 2026." },
+  { id: "cubo-infinito-fidget-metal", name: "Cubo Infinito Fidget Metal Antiestrés", category: "tech", price: 13.99, hue: 215, rating: 4.6, proof: "El más buscado", collection: "setup-tech", tagline: "El fidget satisfying de aluminio que no sueltas en el escritorio.", seo: "Cubo infinito fidget de metal (aluminio) antiestrés: juguete satisfying para las manos que alivia la ansiedad y ayuda a concentrarse. Gadget de escritorio premium y duradero, viral en TikTok." },
+  { id: "dispensador-pasta-dientes-automatico", name: "Dispensador Pasta de Dientes Automático", category: "hogar", price: 17.99, hue: 195, rating: 4.5, proof: "Lo más guardado", collection: "el-cuarto", tagline: "Aprieta solo la pasta justa: el baño ordenado de los reels aesthetic.", seo: "Dispensador automático de pasta de dientes de pared con soporte para cepillos y vasos: exprime la dosis justa sin desperdicio y se instala sin taladro. Organización de baño aesthetic viral, ideal para familias." },
+  { id: "organizador-ducha-adhesivo-acero", name: "Organizador de Ducha Adhesivo Acero", category: "hogar", price: 22.99, hue: 200, rating: 4.6, proof: "El más buscado", collection: "el-cuarto", tagline: "Ducha ordenada sin taladro: estantes de acero que no se oxidan.", seo: "Set de estantes organizadores de ducha adhesivos de acero inoxidable antióxido: orden sin taladro para geles, champús y maquinillas. El shower caddy aesthetic que ordena el baño en minutos." },
+  { id: "lampara-medusa-acuario-led", name: "Lámpara Medusa Acuario LED Mood", category: "iluminacion", price: 27.99, badge: "VIRAL", hue: 245, rating: 4.7, proof: "Viral en TikTok", collection: "el-cuarto", tagline: "Medusas que nadan en colores: la mood lamp más hipnótica del cuarto.", seo: "Lámpara de acuario de medusas con LED que cambian de color y mando: las medusas artificiales nadan creando un ambiente relajante e hipnótico. Mood light sensorial viral, ideal para el cuarto aesthetic." },
+  { id: "rejilla-escurridor-enrollable-fregadero", name: "Rejilla Escurridor Enrollable Fregadero", category: "hogar", price: 16.99, hue: 185, rating: 4.6, proof: "Lo más guardado", collection: "cocina-viral", tagline: "Se enrolla y desaparece: el escurridor que libera la encimera.", seo: "Rejilla escurridora enrollable de silicona sobre el fregadero: seca platos, vasos y verduras y se enrolla para guardarla y liberar la encimera. Resistente al calor y antideslizante, el básico de cocina aesthetic." },
+  { id: "portavelas-burbujas-cristal-taper", name: "Portavelas Cristal Estriado Taper (pack)", category: "hogar", price: 13.99, hue: 290, rating: 4.6, proof: "Favorito del mes", collection: "el-cuarto", tagline: "El detalle de mesa aesthetic: velas largas sobre cristal estriado.", seo: "Set de portavelas de cristal estriado para velas largas (taper): el detalle decorativo que eleva la mesa, la estantería o un dinner aesthetic. Cristal transparente elegante, tendencia deco viral." },
+  { id: "lampara-proyector-sunset-aura", name: "Lámpara Proyector Sunset Aura", category: "iluminacion", price: 18.99, badge: "VIRAL", hue: 20, rating: 4.7, proof: "Viral en TikTok", collection: "el-cuarto", tagline: "El atardecer y el arcoíris en tu pared para fotos de ensueño.", seo: "Lámpara proyector de atardecer y aura (sunset lamp) con cabezal giratorio y luz regulable: proyecta un halo de colores tipo sunset perfecto para fotos, selfies y ambientar el cuarto. La luz aesthetic viral de TikTok." },
+  { id: "limpiador-brochas-silicona-cuenco", name: "Limpiador Brochas Silicona Cuenco", category: "selfcare", price: 9.99, hue: 320, rating: 4.5, proof: "El más buscado", collection: "glow-up", tagline: "Brochas como nuevas en segundos: el cuenco de silicona satisfying.", seo: "Cuenco limpiador de brochas de maquillaje en silicona plegable: limpia pinceles y esponjas a fondo con sus texturas y se guarda en cualquier sitio. Accesorio de higiene beauty imprescindible y aesthetic." },
+  { id: "quitapelusas-electrico-recargable", name: "Quitapelusas Eléctrico Recargable", category: "tech", price: 17.99, hue: 205, rating: 4.6, proof: "Lo más guardado", collection: "that-girl", tagline: "Ropa como nueva: elimina bolitas y pelusas en pasadas satisfying.", seo: "Quitapelusas eléctrico recargable por USB con varias velocidades: elimina bolitas, pelusas y pilling de jerséis, abrigos y sofás dejando la ropa como nueva. El gadget satisfying que renueva el armario." },
+  { id: "ducha-filtro-vitamina-c-spa", name: "Alcachofa Ducha Filtro Vitamina C Spa", category: "selfcare", price: 23.99, hue: 35, rating: 4.6, proof: "Tendencia 2026", collection: "glow-up", tagline: "Ducha spa con filtro de vitamina C para piel y pelo más suaves.", seo: "Alcachofa de ducha de mano con filtro de vitamina C y alta presión: reduce el cloro y suaviza el agua para una piel y un pelo más cuidados, con aroma cítrico spa. El upgrade self-care de la ducha viral." },
+  { id: "funda-nordica-volantes-coquette", name: "Funda Nórdica Volantes Coquette", category: "hogar", price: 39.99, badge: "TRENDING", hue: 335, rating: 4.6, proof: "Tendencia 2026", collection: "y2k-coquette", tagline: "La cama princesa coquette: funda nórdica con volantes para un cuarto soñado.", seo: "Funda nórdica con volantes fruncidos (ruffle duvet cover) estilo coquette: transforma la cama en un dormitorio romántico shabby chic. Tejido suave y transpirable, set de cama aesthetic viral." },
+  { id: "organizador-bajo-fregadero-extensible", name: "Organizador Bajo Fregadero Extensible 2 Pisos", category: "hogar", price: 25.99, hue: 190, rating: 4.6, proof: "El más buscado", collection: "el-cuarto", tagline: "Aprovecha todo el hueco bajo el fregadero con doble estante.", seo: "Organizador extensible de 2 pisos para debajo del fregadero: estantería ajustable en ancho que aprovecha el hueco alrededor de las tuberías para ordenar productos de limpieza y baño. Orden aesthetic y funcional." },
 ];
 
 // Cada producto usa su foto real en /productos/{id}.jpg y una descripción SEO.
